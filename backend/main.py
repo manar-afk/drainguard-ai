@@ -183,8 +183,10 @@ async def inspect_drain(
     image: UploadFile = File(...),
     description: str = Form("")
 ):
+    # Sanitize filename to prevent path traversal LFI
+    safe_filename = os.path.basename(image.filename)
     # Save the file temporarily
-    temp_path = os.path.join(REPORTS_DIR, f"temp_inspect_{image.filename}")
+    temp_path = os.path.join(REPORTS_DIR, f"temp_inspect_{safe_filename}")
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(image.file, buffer)
         
@@ -196,7 +198,7 @@ async def inspect_drain(
             
         inputs = {
             "image_bytes": img_b64,
-            "image_name": image.filename,
+            "image_name": safe_filename,
             "description": description
         }
         
@@ -204,7 +206,7 @@ async def inspect_drain(
         
         # Save a permanent copy if issues detected
         if cv_result.get("detected_issues"):
-            perm_filename = f"cv_{int(shutil.time.time())}_{image.filename}"
+            perm_filename = f"cv_{int(shutil.time.time())}_{safe_filename}"
             perm_path = os.path.join(REPORTS_DIR, perm_filename)
             shutil.copy(temp_path, perm_path)
             cv_result["image_url"] = f"/uploads/reports/{perm_filename}"
@@ -286,7 +288,8 @@ async def submit_citizen_report(
     
     # Save Image if uploaded
     if image:
-        img_filename = f"citizen_img_{int(shutil.time.time())}_{image.filename}"
+        safe_img_name = os.path.basename(image.filename)
+        img_filename = f"citizen_img_{int(shutil.time.time())}_{safe_img_name}"
         img_path = os.path.join(REPORTS_DIR, img_filename)
         with open(img_path, "wb") as buffer:
             shutil.copyfileobj(image.file, buffer)
@@ -294,7 +297,8 @@ async def submit_citizen_report(
         
     # Save Audio if uploaded
     if audio:
-        aud_filename = f"citizen_aud_{int(shutil.time.time())}_{audio.filename}"
+        safe_aud_name = os.path.basename(audio.filename)
+        aud_filename = f"citizen_aud_{int(shutil.time.time())}_{safe_aud_name}"
         aud_path = os.path.join(REPORTS_DIR, aud_filename)
         with open(aud_path, "wb") as buffer:
             shutil.copyfileobj(audio.file, buffer)
