@@ -1,7 +1,7 @@
 # ==========================================
-# STAGE 1: Compile the React Frontend
+# STAGE 1: Compile the React Frontend (Using glibc-compatible Node)
 # ==========================================
-FROM node:18-alpine AS frontend-builder
+FROM node:18 AS frontend-builder
 WORKDIR /app/frontend
 
 # Install dependencies first (for faster cached builds)
