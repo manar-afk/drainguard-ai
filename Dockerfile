@@ -1,7 +1,7 @@
 # ==========================================
-# STAGE 1: Compile the React Frontend (Using glibc-compatible Node)
+# STAGE 1: Compile the React Frontend (Using Node 20 for CustomEvent support)
 # ==========================================
-FROM node:18 AS frontend-builder
+FROM node:20 AS frontend-builder
 WORKDIR /app/frontend
 
 # Install dependencies first (for faster cached builds)
