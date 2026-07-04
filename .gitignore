@@ -1,0 +1,26 @@
+# Python Caches & Environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+.env
+
+# SQLite local database (generated dynamically)
+backend/drainguard.db
+
+# Uploaded media from testing
+backend/uploads/reports/cv_*
+backend/uploads/reports/citizen_*
+backend/uploads/reports/temp_*
+
+# Node modules & Vite compilations
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# OS specific files
+.DS_Store
+Thumbs.db
