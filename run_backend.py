@@ -28,10 +28,12 @@ def main():
             print(result.stderr)
             sys.exit(1)
             
-    print("[+] Starting DrainGuard AI Backend Server on http://localhost:8000")
+    # Retrieve port from environment variable (specifically for Google Cloud Run compatibility)
+    port = int(os.environ.get("PORT", 8000))
+    print(f"[+] Starting DrainGuard AI Backend Server on http://localhost:{port}")
     # Start browser opener in background thread
     threading.Thread(target=open_browser, daemon=True).start()
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
     main()
